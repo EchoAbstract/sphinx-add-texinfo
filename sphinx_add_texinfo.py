@@ -247,7 +247,7 @@ def main(args=None):
     parser.add_argument('--startdocname')
     parser.add_argument('--targetname')
     parser.add_argument('--title')
-    parser.add_argument('--author', action='append')
+    parser.add_argument('--author', dest='authors', action='append')
     parser.add_argument('--dir-entry')
     parser.add_argument('--description')
     parser.add_argument('--category')
