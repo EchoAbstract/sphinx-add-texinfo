@@ -65,15 +65,13 @@ def find_sphinx_dir():
     return one_of(['doc', 'docs'], os.path.isdir)
 
 
-def find_sphinx_makefile():
-    doc = find_sphinx_dir()
+def find_sphinx_makefile(doc):
     return one_of(
         [os.path.join(doc, 'Makefile')],
         os.path.isfile)
 
 
-def find_sphinx_conf():
-    doc = find_sphinx_dir()
+def find_sphinx_conf(doc):
     return one_of(
         [os.path.join(doc, 'conf.py'),
          os.path.join(doc, 'source', 'conf.py')],
@@ -211,15 +209,17 @@ def params_for_texinfo_documents(conf):
     return params
 
 
-def sphinx_add_texinfo(**additional_params):
+def sphinx_add_texinfo(doc_path, **additional_params):
+    if doc_path is None:
+        doc_path = find_sphinx_dir()
 
-    makefile_path = find_sphinx_makefile()
+    makefile_path = find_sphinx_makefile(doc_path)
     with open(makefile_path) as fp:
         makefile_orig_lines = fp.readlines()
     builddir = get_makefile_builddir(makefile_path, makefile_orig_lines)
     makefile_lines = list(modify_makefile_lines(makefile_orig_lines, builddir))
 
-    conf_path = find_sphinx_conf()
+    conf_path = find_sphinx_conf(doc_path)
     conf = read_sphinx_conf(conf_path)
     params = params_for_texinfo_documents(conf)
     params.update(filter_dict(None, additional_params))
@@ -236,6 +236,13 @@ def main(args=None):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=__doc__)
+    parser.add_argument(
+        '--doc-path', '-d',
+        help="""
+        Specify document root.  `DOC_PATH/Makefile` must exist and
+        typically either `DOC_PATH/_build/` or `DOC_PATH/build/` exists.
+        If it is `doc` or `docs`, it is automatically picked up.
+        """)
     parser.add_argument('--project-name')
     parser.add_argument('--startdocname')
     parser.add_argument('--targetname')
