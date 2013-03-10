@@ -2,6 +2,16 @@
 
 """
 Script to add texinfo targets in Sphinx Makefile
+
+Just run the program at the root of the project::
+
+    %(prog)s
+
+Resources:
+
+- (info "(sphinx) Options for Texinfo output")
+- http://sphinx-doc.org/config.html#confval-texinfo_documents
+
 """
 
 """
