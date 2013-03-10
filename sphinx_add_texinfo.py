@@ -115,6 +115,13 @@ def modify_makefile_lines(lines, builddir):
 
 
 def get_makefile_builddir(path, lines):
+    """
+    Read Makefile and find appropriate build directory.
+
+    :rtype: str
+    :return: '$(BUILDDIR)', '_build' or 'build'
+
+    """
     for l in lines:
         if '$(BUILDDIR)' in l:
             return '$(BUILDDIR)'
@@ -148,6 +155,12 @@ def conf_py_texinfo_documents(
         project_name, startdocname,
         targetname=None, title=None, authors=[], dir_entry=None,
         description=None, category='Programming', toctree_only=True):
+    """
+    Generate "texinfo_documents = [...]" for conf.py.
+
+    :rtype: str
+
+    """
     targetname = targetname or project_name.lower()
     title = title or '{0} Documentation'.format(project_name)
     description = description or title
@@ -174,6 +187,15 @@ def read_sphinx_conf(confpath):
 
 
 def params_for_texinfo_documents(conf):
+    """
+    Generate kwds for `conf_py_texinfo_documents` based on conf.py.
+
+    :type ns: dict
+    :arg  ns: conf.py loaded by `read_sphinx_conf`
+    :rtype  : dict
+    :return : keyword arguments for `conf_py_texinfo_documents`
+
+    """
     project = conf['project']
     params = dict(project_name=project)
 
