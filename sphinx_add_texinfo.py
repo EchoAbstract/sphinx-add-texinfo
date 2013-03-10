@@ -45,6 +45,12 @@ def one_of(candidates, predicate):
             return doc
 
 
+def filter_dict(pred, d):
+    if pred is None:
+        pred = lambda k, v: v is not None
+    return dict((k, v) for (k, v) in d.items() if pred(k, v))
+
+
 def find_sphinx_dir():
     return one_of(['doc', 'docs'], os.path.isdir)
 
@@ -184,7 +190,7 @@ def sphinx_add_texinfo(**additional_params):
     conf_path = find_sphinx_conf()
     conf = read_sphinx_conf(conf_path)
     params = params_for_texinfo_documents(conf)
-    params.update(additional_params)
+    params.update(filter_dict(None, additional_params))
     conf_addition = conf_py_texinfo_documents(**params)
 
     with open(makefile_path, 'w') as fp:
@@ -198,7 +204,15 @@ def main(args=None):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=__doc__)
-    parser.add_argument
+    parser.add_argument('--project-name')
+    parser.add_argument('--startdocname')
+    parser.add_argument('--targetname')
+    parser.add_argument('--title')
+    parser.add_argument('--author', action='append')
+    parser.add_argument('--dir-entry')
+    parser.add_argument('--description')
+    parser.add_argument('--category')
+    parser.add_argument('--toctree-only', choices=[0, 1], type=int)
     ns = parser.parse_args(args)
     sphinx_add_texinfo(**vars(ns))
 
